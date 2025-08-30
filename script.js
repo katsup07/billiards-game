@@ -11,14 +11,18 @@ function updateScoreboard() {
 
 const friction = 0.99;
 const pocketRadius = 18;
-const pockets = [
-  { x: 0, y: 0 },
-  { x: width / 2, y: 0 },
-  { x: width, y: 0 },
-  { x: 0, y: height },
-  { x: width / 2, y: height },
-  { x: width, y: height }
-];
+let pockets = [];
+
+function createPockets() {
+  pockets = [
+    { x: 0, y: 0 },
+    { x: width / 2, y: 0 },
+    { x: width, y: 0 },
+    { x: 0, y: height },
+    { x: width / 2, y: height },
+    { x: width, y: height }
+  ];
+}
 
 const cueStart = { x: 150, y: 200 };
 
@@ -200,6 +204,7 @@ function setup() {
   ctx = canvas.getContext('2d');
   width = canvas.width;
   height = canvas.height;
+  createPockets();
   solidsCountEl = document.getElementById('solids-count');
   stripesCountEl = document.getElementById('stripes-count');
   messageEl = document.getElementById('message');
