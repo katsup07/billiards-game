@@ -7,7 +7,7 @@
   body { font-family: sans-serif; background: #111; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #eee; }
   #room { position: relative; width: 1000px; height: 600px; background: #1b1b1b; }
   #scoreboard { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); }
-  canvas { background: #35654d; border: 2px solid #2e5631; position: absolute; left: 100px; top: 100px; }
+  canvas { background: #35654d; border: 2px solid #2e5631; position: absolute; left: 100px; top: 100px; z-index: 1; }
   #reset { margin-left: 10px; }
   .chair { position: absolute; width: 40px; height: 40px; background: #555; border: 3px solid #333; border-radius: 4px; }
   .round-table { position: absolute; width: 60px; height: 60px; background: #664c33; border-radius: 50%; border: 3px solid #442; }
@@ -34,6 +34,6 @@
   <div class="bottle" style="left:932px; top:440px;"></div>
   <div class="bottle" style="left:70px; top:500px;"></div>
 </div>
-<script src="script.js"></script>
+<script defer src="script.js"></script>
 </body>
 </html>

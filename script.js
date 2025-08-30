@@ -1,12 +1,5 @@
-const canvas = document.getElementById('table');
-const ctx = canvas.getContext('2d');
-const width = canvas.width;
-const height = canvas.height;
-
-const solidsCountEl = document.getElementById('solids-count');
-const stripesCountEl = document.getElementById('stripes-count');
-const messageEl = document.getElementById('message');
-const resetBtn = document.getElementById('reset');
+let canvas, ctx, width, height;
+let solidsCountEl, stripesCountEl, messageEl, resetBtn;
 
 let solidsSunk = 0;
 let stripesSunk = 0;
@@ -164,7 +157,7 @@ let cueBall = balls[0];
 let isAiming = false;
 let aimPos = null;
 
-canvas.addEventListener('mousedown', (e) => {
+function onMouseDown(e) {
   const rect = canvas.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
@@ -172,16 +165,16 @@ canvas.addEventListener('mousedown', (e) => {
     isAiming = true;
     aimPos = { x, y };
   }
-});
+}
 
-canvas.addEventListener('mousemove', (e) => {
+function onMouseMove(e) {
   if (isAiming) {
     const rect = canvas.getBoundingClientRect();
     aimPos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
   }
-});
+}
 
-canvas.addEventListener('mouseup', () => {
+function onMouseUp() {
   if (isAiming) {
     const dx = cueBall.x - aimPos.x;
     const dy = cueBall.y - aimPos.y;
@@ -189,10 +182,7 @@ canvas.addEventListener('mouseup', () => {
     cueBall.vy = dy * 0.1;
     isAiming = false;
   }
-});
-
-<<<<<<< HEAD
-=======
+}
 function resetGame() {
   solidsSunk = 0;
   stripesSunk = 0;
@@ -204,9 +194,24 @@ function resetGame() {
   updateScoreboard();
 }
 
-resetBtn.addEventListener('click', resetGame);
+function setup() {
+  canvas = document.getElementById('table');
+  ctx = canvas.getContext('2d');
+  width = canvas.width;
+  height = canvas.height;
+  solidsCountEl = document.getElementById('solids-count');
+  stripesCountEl = document.getElementById('stripes-count');
+  messageEl = document.getElementById('message');
+  resetBtn = document.getElementById('reset');
 
->>>>>>> 801b68b378382bb64a5f345c02fe37d64d01562c
+  canvas.addEventListener('mousedown', onMouseDown);
+  canvas.addEventListener('mousemove', onMouseMove);
+  canvas.addEventListener('mouseup', onMouseUp);
+  resetBtn.addEventListener('click', resetGame);
+
+  updateScoreboard();
+  loop();
+}
 function handleCollisions() {
   for (let i = 0; i < balls.length; i++) {
     for (let j = i + 1; j < balls.length; j++) {
@@ -269,7 +274,6 @@ function loop() {
   drawAim();
   requestAnimationFrame(loop);
 }
+window.addEventListener('load', setup);
 
-updateScoreboard();
-loop();
 
