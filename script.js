@@ -6,6 +6,7 @@ const height = canvas.height;
 const solidsCountEl = document.getElementById('solids-count');
 const stripesCountEl = document.getElementById('stripes-count');
 const messageEl = document.getElementById('message');
+const resetBtn = document.getElementById('reset');
 
 let solidsSunk = 0;
 let stripesSunk = 0;
@@ -131,31 +132,34 @@ const colors = {
   15: 'maroon'
 };
 
-balls.push(new Ball(cueStart.x, cueStart.y, 'white', 'cue'));
-
-let number = 1;
-const spacing = 22;
-for (let row = 0; row < 5; row++) {
-  for (let col = 0; col <= row; col++) {
-    const x = 500 + row * spacing;
-    const y = 200 - (row * spacing) / 2 + col * spacing;
-    let type, color;
-    if (number === 8) {
-      type = 'eight';
-      color = 'black';
-    } else if (number <= 7) {
-      type = 'solid';
-      color = colors[number];
-    } else {
-      type = 'stripe';
-      color = colors[number];
+function initBalls() {
+  balls.length = 0;
+  balls.push(new Ball(cueStart.x, cueStart.y, 'white', 'cue'));
+  let number = 1;
+  const spacing = 22;
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col <= row; col++) {
+      const x = 500 + row * spacing;
+      const y = 200 - (row * spacing) / 2 + col * spacing;
+      let type, color;
+      if (number === 8) {
+        type = 'eight';
+        color = 'black';
+      } else if (number <= 7) {
+        type = 'solid';
+        color = colors[number];
+      } else {
+        type = 'stripe';
+        color = colors[number];
+      }
+      balls.push(new Ball(x, y, color, type, number));
+      number++;
     }
-    balls.push(new Ball(x, y, color, type, number));
-    number++;
   }
 }
 
-const cueBall = balls[0];
+initBalls();
+let cueBall = balls[0];
 
 let isAiming = false;
 let aimPos = null;
@@ -187,6 +191,22 @@ canvas.addEventListener('mouseup', () => {
   }
 });
 
+<<<<<<< HEAD
+=======
+function resetGame() {
+  solidsSunk = 0;
+  stripesSunk = 0;
+  messageEl.textContent = '';
+  isAiming = false;
+  aimPos = null;
+  initBalls();
+  cueBall = balls[0];
+  updateScoreboard();
+}
+
+resetBtn.addEventListener('click', resetGame);
+
+>>>>>>> 801b68b378382bb64a5f345c02fe37d64d01562c
 function handleCollisions() {
   for (let i = 0; i < balls.length; i++) {
     for (let j = i + 1; j < balls.length; j++) {
