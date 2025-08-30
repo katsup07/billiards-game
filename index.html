@@ -4,10 +4,18 @@
 <meta charset="UTF-8">
 <title>Simple Billiards</title>
 <style>
+  body { font-family: sans-serif; text-align: center; }
   canvas { background: #35654d; display: block; margin: 20px auto; border: 2px solid #2e5631; }
+  #scoreboard { margin-top: 10px; }
 </style>
 </head>
 <body>
+<div id="scoreboard">
+  <span>Solids: <span id="solids-count">0</span></span>
+  &nbsp;|&nbsp;
+  <span>Stripes: <span id="stripes-count">0</span></span>
+  <div id="message"></div>
+</div>
 <canvas id="table" width="800" height="400"></canvas>
 <script src="script.js"></script>
 </body>

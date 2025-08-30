@@ -3,6 +3,18 @@ const ctx = canvas.getContext('2d');
 const width = canvas.width;
 const height = canvas.height;
 
+const solidsCountEl = document.getElementById('solids-count');
+const stripesCountEl = document.getElementById('stripes-count');
+const messageEl = document.getElementById('message');
+
+let solidsSunk = 0;
+let stripesSunk = 0;
+
+function updateScoreboard() {
+  solidsCountEl.textContent = solidsSunk;
+  stripesCountEl.textContent = stripesSunk;
+}
+
 const friction = 0.99;
 const pocketRadius = 18;
 const pockets = [
@@ -14,23 +26,63 @@ const pockets = [
   { x: width, y: height }
 ];
 
+const cueStart = { x: 150, y: 200 };
+
+function sinkBall(ball) {
+  if (ball.type === 'cue') {
+    ball.x = cueStart.x;
+    ball.y = cueStart.y;
+    ball.inPocket = false;
+    ball.vx = 0;
+    ball.vy = 0;
+  } else if (ball.type === 'solid') {
+    solidsSunk++;
+    updateScoreboard();
+  } else if (ball.type === 'stripe') {
+    stripesSunk++;
+    updateScoreboard();
+  } else if (ball.type === 'eight') {
+    if (stripesSunk === 7) {
+      messageEl.textContent = 'Stripes win!';
+    } else {
+      messageEl.textContent = 'Solids win!';
+    }
+  }
+}
+
 class Ball {
-  constructor(x, y, color) {
+  constructor(x, y, color, type = 'solid', number = null) {
     this.x = x;
     this.y = y;
     this.vx = 0;
     this.vy = 0;
     this.radius = 10;
     this.color = color;
+    this.type = type;
+    this.number = number;
     this.inPocket = false;
   }
 
   draw() {
     if (this.inPocket) return;
     ctx.beginPath();
-    ctx.fillStyle = this.color;
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
+    if (this.type === 'stripe') {
+      ctx.fillStyle = 'white';
+      ctx.fill();
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(this.x - this.radius, this.y - this.radius / 2, this.radius * 2, this.radius);
+      ctx.clip();
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+      ctx.restore();
+    } else {
+      ctx.fillStyle = this.color;
+      ctx.fill();
+    }
   }
 
   update() {
@@ -44,29 +96,65 @@ class Ball {
       this.vy = 0;
     }
 
-    // Bounce off walls
     if (this.x <= this.radius || this.x >= width - this.radius) this.vx *= -1;
     if (this.y <= this.radius || this.y >= height - this.radius) this.vy *= -1;
     this.x = Math.max(this.radius, Math.min(width - this.radius, this.x));
     this.y = Math.max(this.radius, Math.min(height - this.radius, this.y));
 
-    // Check pockets
     for (const p of pockets) {
       if (Math.hypot(this.x - p.x, this.y - p.y) < pocketRadius) {
         this.inPocket = true;
         this.vx = 0;
         this.vy = 0;
+        sinkBall(this);
+        break;
       }
     }
   }
 }
 
-const balls = [
-  new Ball(150, 200, 'white'),
-  new Ball(500, 200, 'red'),
-  new Ball(530, 180, 'blue'),
-  new Ball(530, 220, 'yellow')
-];
+const balls = [];
+const colors = {
+  1: 'yellow',
+  2: 'blue',
+  3: 'red',
+  4: 'purple',
+  5: 'orange',
+  6: 'green',
+  7: 'maroon',
+  9: 'yellow',
+  10: 'blue',
+  11: 'red',
+  12: 'purple',
+  13: 'orange',
+  14: 'green',
+  15: 'maroon'
+};
+
+balls.push(new Ball(cueStart.x, cueStart.y, 'white', 'cue'));
+
+let number = 1;
+const spacing = 22;
+for (let row = 0; row < 5; row++) {
+  for (let col = 0; col <= row; col++) {
+    const x = 500 + row * spacing;
+    const y = 200 - (row * spacing) / 2 + col * spacing;
+    let type, color;
+    if (number === 8) {
+      type = 'eight';
+      color = 'black';
+    } else if (number <= 7) {
+      type = 'solid';
+      color = colors[number];
+    } else {
+      type = 'stripe';
+      color = colors[number];
+    }
+    balls.push(new Ball(x, y, color, type, number));
+    number++;
+  }
+}
+
 const cueBall = balls[0];
 
 let isAiming = false;
@@ -162,4 +250,6 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
+updateScoreboard();
 loop();
+
